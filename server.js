@@ -1,52 +1,60 @@
 const http = require('http');
 const url = require('url');
-const messages = require("./lang/en.js"); 
+const messages = require("./lang/en.js");
 
-const PORT = 3000;
-const HOST = '0.0.0.0';  // Allows external access
-const ENDPOINT = '/COMP4537/labs'; 
-
-// route handlers
+// Route handlers
 const getDate = require('./COMP4537/labs/3/getDate/server.js');
 const readFile = require('./COMP4537/labs/3/readFile/read.js');
 const writeFile = require('./COMP4537/labs/3/writeFile/write.js');
 
-const server = http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url, true);
-    console.log(`Requested Path: ${parsedUrl.pathname}`);
+class Server {
+    constructor(port, host, endpoint) {
+        this.port = port;
+        this.host = host;
+        this.endpoint = endpoint;
+        this.server = http.createServer((req, res) => this.handleRequest(req, res));
+    }
 
-    // startsWith function to check the endpoint
-    if (parsedUrl.pathname.startsWith(ENDPOINT)) {
-        // res.writeHead(200, { 'Content-Type': 'text/plain' });
-        // res.end("Success! Endpoint hit.");
-        // Navigate to getDate
-        if (parsedUrl.pathname === ENDPOINT + '/3/getDate') {
+    // Start the server
+    start() {
+        this.server.listen(this.port, this.host, () => {
+            console.log(`Server running at http://${this.host}:${this.port}${this.endpoint}`);
+        });
+    }
+
+    // Handle incoming requests
+    handleRequest = (req, res) => {
+        const parsedUrl = url.parse(req.url, true);
+        console.log(`Requested Path: ${parsedUrl.pathname}`);
+
+        if (parsedUrl.pathname.startsWith(this.endpoint)) {
+            this.routeRequest(parsedUrl.pathname, req, res);
+        } else {
+            this.sendNotFound(res);
+        }
+    };
+
+    // Route the request to the correct handler
+    routeRequest = (pathname, req, res) => {
+        if (pathname === `${this.endpoint}/3/getDate`) {
             console.log('To getDate');
-            getDate.emit('request', req, res);
-            return;
-            // emit calls listeners 
-        }
-        // Navigate to readFile
-        else if (parsedUrl.pathname.startsWith(ENDPOINT + '/3/readFile/')) {
+            getDate.handleRequest('request', req, res);
+        } else if (pathname.startsWith(`${this.endpoint}/3/readFile/`)) {
             console.log('To readFile');
-            readFile.emit('request', req, res);
-            return;
-        }
-        // Navigate to writeFile
-        else if (parsedUrl.pathname === ENDPOINT + '/3/writeFile') {
+            readFile.handleRequest(req, res);
+        } else if (pathname === `${this.endpoint}/3/writeFile`) {
             console.log('To writeFile');
-            writeFile.emit('request', req, res);
-            return;
+            writeFile.handleRequest(req, res);
+        } else {
+            this.sendNotFound(res);
         }
-    } else {
+    };
+
+    sendNotFound = (res) => {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end(messages.notfound || "404 Not Found");
-        return;
-    }
-});
+    };
+}
 
-// Start the server
-server.listen(PORT, HOST, () => {
-    console.log(`Server running at http://${HOST}:${PORT}${ENDPOINT}`);
-});
-
+const serverInstance = new Server(3000, '0.0.0.0', '/COMP4537/labs');
+serverInstance.start();
