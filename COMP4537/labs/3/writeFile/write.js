@@ -56,4 +56,4 @@ class WriteFileHandler {
     }
 }
 
-module.exports = new WriteFileHandler('../');
+module.exports = new WriteFileHandler('../../../');
