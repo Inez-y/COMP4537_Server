@@ -49,7 +49,7 @@
 const http = require('http');
 const url = require('url');
 const { getDate } = require("./modules/utils");
-const messages = require("./lang/en/en");
+const messages = require("../../../../en/lang/en");
 
 const PORT = 3000;
 const HOST = '0.0.0.0';  // does it work if i put my domain?
