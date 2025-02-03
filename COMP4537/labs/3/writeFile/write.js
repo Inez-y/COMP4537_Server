@@ -6,10 +6,11 @@ class WriteFileHandler {
         this.fs = require('fs');
         this.path = require('path');
         this.url = require('url');
+        this.messages = require('../../../../lang/en.js');
 
         this.baseDir = this.path.resolve(__dirname, baseDir); // Secure base directory
 
-        // 🔍 Handle requests
+        // Handle requests
         this.handleRequest = (req, res) => {
             const parsedUrl = this.url.parse(req.url, true);
             const query = parsedUrl.query;
@@ -32,8 +33,7 @@ class WriteFileHandler {
             // Ensure text query parameter is provided
             if (!query.text) {
                 res.writeHead(400, { 'Content-Type': 'text/plain' });
-                res.end(this.messages.getMessage("accessdeny") + "Check the file request" || "Access Denied: Invalid file request.");
-                res.end("Error: No text provided.");
+                res.end(this.messages.getMessage("accessdeny") + "No text provided" || "Access Denied: Invalid file request.");
                 return;
             }
 
@@ -56,4 +56,4 @@ class WriteFileHandler {
     }
 }
 
-module.exports = new WriteFileHandler('../../../');
+module.exports = new WriteFileHandler('../');

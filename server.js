@@ -44,7 +44,7 @@ class Server {
         } else if (pathname.startsWith(`${this.endpoint}/3/readFile/`)) {
             console.log('To readFile');
             this.readFile.handleRequest(req, res);
-        } else if (pathname === `${this.endpoint}/3/writeFile`) {
+        } else if (pathname.startsWith(`${this.endpoint}/3/writeFile`)) {
             console.log('To writeFile');
             this.writeFile.handleRequest(req, res);
         } else {
