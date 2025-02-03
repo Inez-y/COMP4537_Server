@@ -38,7 +38,7 @@ class Server {
 
     // Route the request to the correct handler
     routeRequest = (pathname, req, res) => {
-        if (pathname === `${this.endpoint}/3/getDate`) {
+        if (pathname.startsWith(`${this.endpoint}/3/getDate`)) {
             console.log('To getDate');
             this.getDate.handleRequest(req, res);
         } else if (pathname.startsWith(`${this.endpoint}/3/readFile/`)) {
