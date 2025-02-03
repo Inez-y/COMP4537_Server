@@ -25,13 +25,14 @@ class WriteFileHandler {
             // Prevent directory traversal attacks
             if (!filePath.startsWith(this.baseDir)) {
                 res.writeHead(403, { 'Content-Type': 'text/plain' });
-                res.end("Access Denied: Invalid file request.");
+                res.end(this.messages.getMessage("accessdeny") + "Check the file request" || "Access Denied: Invalid file request.");
                 return;
             }
 
             // Ensure text query parameter is provided
             if (!query.text) {
                 res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end(this.messages.getMessage("accessdeny") + "Check the file request" || "Access Denied: Invalid file request.");
                 res.end("Error: No text provided.");
                 return;
             }
@@ -45,7 +46,7 @@ class WriteFileHandler {
             this.fs.appendFile(filePath, text + '\n', (err) => {
                 if (err) {
                     res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end("Error writing to file.");
+                    res.end(this.messages.getMessage("cannotwrite") || "Error writing to file.");
                 } else {
                     res.writeHead(200, { 'Content-Type': 'text/plain' });
                     res.end(`Text "${text}" appended to ${this.path.basename(filePath)}`);
@@ -55,4 +56,4 @@ class WriteFileHandler {
     }
 }
 
-module.exports = new WriteFileHandler('../../');
+module.exports = new WriteFileHandler('../');

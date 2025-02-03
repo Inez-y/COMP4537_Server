@@ -29,10 +29,9 @@ class ReadFileHandler {
         const filePath = this.path.join(this.baseDir, fileName); 
         console.log(`Reading from: ${filePath}`);
 
-        // Prevent directory traversal attacks
         if (!filePath.startsWith(this.baseDir)) {
             res.writeHead(403, { 'Content-Type': 'text/plain' });
-            res.end("Access Denied: Invalid file request.");
+            res.end(this.messages.getMessage("nocontent") || "Access Denied: Invalid file request.");
             return;
         }
 
@@ -40,7 +39,7 @@ class ReadFileHandler {
         this.fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
-                res.end(`Error: File "${fileName}" not found.`);
+                res.end("Your file is..." + this.messages.getMessage("notfound") || "404 Not Found");
             } else {
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.end(data);

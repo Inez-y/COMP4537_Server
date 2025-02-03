@@ -15,7 +15,7 @@ class GetDateHandler {
         const name = parsedUrl.query.name || "Guest";
         const currentTime = this.getDate(); // Server time
 
-        const responseMessage = `<p style="color:blue;">${this.messages.getMessage.replace("%s", name)} ${currentTime}</p>`;
+        const responseMessage = `<p style="color:blue;">${this.messages.getMessage("greeting").replace("%s", name)} ${currentTime}</p>`;
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(responseMessage);
